@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Map - IoT Sentinel</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        .navbar { background: #333; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar a { color: white; text-decoration: none; padding: 0 10px; margin: 0 5px; font-size: 14px; }
+        .navbar a:hover { color: #007bff; }
+        .navbar a.active { color: #007bff; font-weight: bold; }
+        .content { margin: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .map-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); height: 600px; }
+        .canvas-wrapper { position: relative; width: 100%; height: 100%; }
+        canvas { width: 100%; height: 100%; display: block; }
+        .threat-legend { display: flex; gap: 20px; margin-top: 20px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .legend-item { display: flex; align-items: center; gap: 10px; }
+        .legend-color { width: 20px; height: 20px; border-radius: 50%; }
+        .color-strong { background: #28a745; }
+        .color-medium { background: #ffc107; }
+        .color-weak { background: #dc3545; }
+        .refresh-btn { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="devices.html">Devices</a>
+        <a href="health.html">Health</a>
+        <a href="sentinels.html">Sentinels</a>
+        <a href="events.html">Events</a>
+        <a href="map.html" class="active">Threat Map</a>
+        <a href="api-keys.html">API Keys</a>
+        <a href="account.html">Account</a>
+        <a href="settings.html">Settings</a>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h1>Threat Map</h1>
+            <button class="refresh-btn" onclick="loadThreatMap()">Refresh</button>
+
+            <div class="map-container">
+                <canvas id="threatCanvas"></canvas>
+            </div>
+
+            <div class="threat-legend">
+                <div class="legend-item">
+                    <div class="legend-color color-strong"></div>
+                    <span>Strong Signal (> -50 dBm)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-medium"></div>
+                    <span>Medium Signal (-50 to -70 dBm)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-weak"></div>
+                    <span>Weak Signal (< -70 dBm)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadThreatMap() {
+            try {
+                const response = await fetch('/v1/events', {
+                    headers: { 'X-API-Key': 'test-key' }
+                });
+                const data = await response.json();
+                drawThreatMap(data.events);
+            } catch (error) {
+                console.error('Error loading threat map:', error);
+            }
+        }
+
+        function drawThreatMap(events) {
+            const canvas = document.getElementById('threatCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            // Clear canvas
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Group by MAC
+            const devices = {};
+            events.forEach(e => {
+                if (!devices[e.mac]) {
+                    devices[e.mac] = { locations: [], rssis: [] };
+                }
+                devices[e.mac].rssis.push(e.rssi);
+                const x = (Math.random() * 0.6 + Math.hash(e.mac) * 0.3) * canvas.width;
+                const y = (Math.random() * 0.6 + (Math.hash(e.mac + '2') * 0.3)) * canvas.height;
+                devices[e.mac].locations.push({x, y});
+            });
+
+            // Draw devices
+            Object.values(devices).forEach(device => {
+                const avgRssi = device.rssis.reduce((a, b) => a + b) / device.rssis.length;
+                const lastLoc = device.locations[device.locations.length - 1];
+
+                let color, radius;
+                if (avgRssi > -50) {
+                    color = '#28a745';
+                    radius = 15;
+                } else if (avgRssi > -70) {
+                    color = '#ffc107';
+                    radius = 12;
+                } else {
+                    color = '#dc3545';
+                    radius = 10;
+                }
+
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(lastLoc.x, lastLoc.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(lastLoc.x, lastLoc.y, radius + 3, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+
+            // Draw centralized hub
+            ctx.fillStyle = '#007bff';
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Hub', canvas.width / 2, canvas.height / 2);
+        }
+
+        // Hash function for consistent positioning
+        String.prototype.hash = function() {
+            let hash = 0;
+            for (let i = 0; i < this.length; i++) {
+                const char = this.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return (Math.sin(hash) + 1) / 2;
+        };
+
+        Math.hash = function(str) {
+            return str.hash ? str.hash() : Math.random();
+        };
+
+        setInterval(loadThreatMap, 5000);
+        loadThreatMap();
+    </script>
+</body>
+</html>

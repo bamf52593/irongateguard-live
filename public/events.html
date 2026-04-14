@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Log - IoT Sentinel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        .navbar { background: #333; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar a { color: white; text-decoration: none; padding: 0 10px; margin: 0 5px; font-size: 14px; }
+        .navbar a:hover { color: #007bff; }
+        .navbar a.active { color: #007bff; font-weight: bold; }
+        .content { margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .filters { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 10px; }
+        input, select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .events-log { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .event-item { padding: 12px 0; border-bottom: 1px solid #eee; display: grid; grid-template-columns: 120px 80px 120px 1fr; gap: 20px; }
+        .event-item:hover { background: #f9f9f9; }
+        .event-time { font-weight: bold; color: #333; }
+        .event-type { background: #007bff; color: white; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+        .event-mac { color: #666; }
+        .refresh-btn { background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="devices.html">Devices</a>
+        <a href="health.html">Health</a>
+        <a href="sentinels.html">Sentinels</a>
+        <a href="events.html" class="active">Events</a>
+        <a href="map.html">Threat Map</a>
+        <a href="api-keys.html">API Keys</a>
+        <a href="account.html">Account</a>
+        <a href="settings.html">Settings</a>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h1>Event Log</h1>
+
+            <div class="filters">
+                <input type="search" id="search-mac" placeholder="Filter by MAC...">
+                <input type="search" id="search-ssid" placeholder="Filter by SSID...">
+                <select id="sentinel-filter"><option value="">All Sentinels</option></select>
+                <button class="refresh-btn" onclick="loadEvents()">Refresh</button>
+            </div>
+
+            <div class="events-log">
+                <div id="events-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allEvents = [];
+
+        async function loadEvents() {
+            try {
+                const response = await fetch('/v1/events', {
+                    headers: { 'X-API-Key': 'test-key' }
+                });
+                const data = await response.json();
+                allEvents = data.events.sort((a, b) => new Date(b.received_at) - new Date(a.received_at));
+                populateSentinels();
+                filterAndDisplay();
+            } catch (error) {
+                console.error('Error loading events:', error);
+            }
+        }
+
+        function populateSentinels() {
+            const sentinels = [...new Set(allEvents.map(e => e.device_id))];
+            const filter = document.getElementById('sentinel-filter');
+            const currentValue = filter.value;
+            const options = filter.querySelectorAll('option');
+            if (options.length === 1) {
+                sentinels.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s;
+                    option.textContent = s;
+                    filter.appendChild(option);
+                });
+            }
+        }
+
+        function filterAndDisplay() {
+            const mac = document.getElementById('search-mac').value.toLowerCase();
+            const ssid = document.getElementById('search-ssid').value.toLowerCase();
+            const sentinel = document.getElementById('sentinel-filter').value;
+
+            const filtered = allEvents.filter(e => {
+                return (!mac || e.mac.toLowerCase().includes(mac)) &&
+                       (!ssid || e.ssid.toLowerCase().includes(ssid)) &&
+                       (!sentinel || e.device_id === sentinel);
+            });
+
+            const list = document.getElementById('events-list');
+            list.innerHTML = filtered.slice(0, 100).map(e => `
+                <div class="event-item">
+                    <div class="event-time">${new Date(e.received_at).toLocaleTimeString()}</div>
+                    <div><span class="event-type">${e.event_type}</span></div>
+                    <div class="event-mac">${e.mac}</div>
+                    <div>${e.ssid} (Ch${e.channel}, ${e.rssi}dBm)</div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('search-mac').addEventListener('input', filterAndDisplay);
+        document.getElementById('search-ssid').addEventListener('input', filterAndDisplay);
+        document.getElementById('sentinel-filter').addEventListener('change', filterAndDisplay);
+
+        setInterval(loadEvents, 5000);
+        loadEvents();
+    </script>
+</body>
+</html>

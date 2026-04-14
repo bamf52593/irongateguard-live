@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Keys - IoT Sentinel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        .navbar { background: #333; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar a { color: white; text-decoration: none; padding: 0 10px; margin: 0 5px; font-size: 14px; }
+        .navbar a:hover { color: #007bff; }
+        .navbar a.active { color: #007bff; font-weight: bold; }
+        .content { margin: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .key-item { background: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .key-name { font-weight: bold; }
+        .key-value { font-family: monospace; color: #666; font-size: 12px; word-break: break-all; }
+        .delete-btn { background: #dc3545; padding: 5px 10px; font-size: 12px; }
+        .delete-btn:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="devices.html">Devices</a>
+        <a href="health.html">Health</a>
+        <a href="sentinels.html">Sentinels</a>
+        <a href="events.html">Events</a>
+        <a href="map.html">Threat Map</a>
+        <a href="api-keys.html" class="active">API Keys</a>
+        <a href="account.html">Account</a>
+        <a href="settings.html">Settings</a>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h1>API Keys Management</h1>
+
+            <div class="section">
+                <h2>Create New API Key</h2>
+                <div class="form-group">
+                    <label>Key Name</label>
+                    <input type="text" id="keyName" placeholder="e.g., Production Key">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="keyDesc" placeholder="Description for this key" rows="3"></textarea>
+                </div>
+                <button onclick="createKey()">Generate API Key</button>
+            </div>
+
+            <div class="section">
+                <h2>Active API Keys</h2>
+                <div id="keys-list">
+                    <div class="key-item">
+                        <div>
+                            <div class="key-name">test-key (Default)</div>
+                            <div class="key-value">test-key</div>
+                        </div>
+                        <span style="color: #666; font-size: 12px;">Created: 2026-04-07</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function createKey() {
+            const name = document.getElementById('keyName').value;
+            if (!name) {
+                alert('Please enter a key name');
+                return;
+            }
+            const newKey = 'sk_' + Math.random().toString(36).substring(2, 15);
+            const item = document.createElement('div');
+            item.className = 'key-item';
+            item.innerHTML = `
+                <div>
+                    <div class="key-name">${name}</div>
+                    <div class="key-value">${newKey}</div>
+                </div>
+                <div>
+                    <span style="color: #666; font-size: 12px;">Created: ${new Date().toLocaleDateString()}</span>
+                    <button class="delete-btn" onclick="this.parentElement.parentElement.remove()">Delete</button>
+                </div>
+            `;
+            document.getElementById('keys-list').appendChild(item);
+            document.getElementById('keyName').value = '';
+            document.getElementById('keyDesc').value = '';
+        }
+    </script>
+</body>
+</html>

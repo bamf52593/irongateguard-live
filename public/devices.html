@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devices - IoT Sentinel Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        .navbar { background: #333; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar a { color: white; text-decoration: none; padding: 0 20px; margin: 0 5px; font-size: 16px; }
+        .navbar a:hover { color: #007bff; }
+        .navbar a.active { color: #007bff; font-weight: bold; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        .refresh-btn { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        .refresh-btn:hover { background: #0056b3; }
+        .devices-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .device-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .device-card h3 { margin: 0 0 15px; color: #333; }
+        .device-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .device-stat:last-child { border-bottom: none; }
+        .device-stat label { font-weight: bold; color: #666; }
+        .device-stat value { color: #007bff; }
+        .signal-weak { color: #dc3545; }
+        .signal-medium { color: #ffc107; }
+        .signal-strong { color: #28a745; }
+        .devices-list { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; font-weight: bold; }
+        tr:hover { background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="devices.html" class="active">Devices</a>
+        <a href="health.html">Health</a>
+        <a href="sentinels.html">Sentinels</a>
+        <a href="events.html">Events</a>
+        <a href="map.html">Threat Map</a>
+        <a href="api-keys.html">API Keys</a>
+        <a href="account.html">Account</a>
+        <a href="settings.html">Settings</a>
+    </div>
+
+    <div class="container">
+        <h1>Connected Devices</h1>
+        <div class="controls">
+            <button class="refresh-btn" onclick="loadDevices()">Refresh</button>
+            <span id="device-count" style="padding: 10px; color: #666;"></span>
+        </div>
+
+        <div id="devices-container" class="devices-grid">
+            <p>Loading devices...</p>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <h2>All Detections</h2>
+            <div class="devices-list">
+                <table id="detections-table">
+                    <thead>
+                        <tr>
+                            <th>MAC Address</th>
+                            <th>Last Seen</th>
+                            <th>Detections</th>
+                            <th>Avg RSSI</th>
+                            <th>Channels Seen</th>
+                            <th>SSIDs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detections-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadDevices() {
+            try {
+                const response = await fetch('/v1/events', {
+                    headers: { 'X-API-Key': 'test-key' }
+                });
+                const data = await response.json();
+                displayDevices(data.events);
+            } catch (error) {
+                console.error('Error loading devices:', error);
+                document.getElementById('devices-container').innerHTML = '<p>Error loading devices</p>';
+            }
+        }
+
+        function displayDevices(events) {
+            // Group by MAC address
+            const devices = {};
+            events.forEach(event => {
+                const mac = event.mac;
+                if (!devices[mac]) {
+                    devices[mac] = {
+                        mac,
+                        detections: [],
+                        ssids: new Set(),
+                        channels: new Set(),
+                        rssiValues: []
+                    };
+                }
+                devices[mac].detections.push(event);
+                devices[mac].ssids.add(event.ssid);
+                devices[mac].channels.add(event.channel);
+                devices[mac].rssiValues.push(event.rssi);
+            });
+
+            // Update count
+            document.getElementById('device-count').textContent = `Total unique devices: ${Object.keys(devices).length}`;
+
+            // Create cards
+            const container = document.getElementById('devices-container');
+            container.innerHTML = '';
+            
+            Object.values(devices).forEach(device => {
+                const avgRssi = Math.round(device.rssiValues.reduce((a, b) => a + b) / device.rssiValues.length);
+                const signalClass = avgRssi > -50 ? 'signal-strong' : avgRssi > -70 ? 'signal-medium' : 'signal-weak';
+                const lastDetection = device.detections[device.detections.length - 1];
+                
+                const card = document.createElement('div');
+                card.className = 'device-card';
+                card.innerHTML = `
+                    <h3>Device ${device.mac.substring(0, 8)}</h3>
+                    <div class="device-stat">
+                        <label>MAC:</label>
+                        <span>${device.mac}</span>
+                    </div>
+                    <div class="device-stat">
+                        <label>Detections:</label>
+                        <span>${device.detections.length}</span>
+                    </div>
+                    <div class="device-stat">
+                        <label>Avg Signal:</label>
+                        <span class="${signalClass}">${avgRssi} dBm</span>
+                    </div>
+                    <div class="device-stat">
+                        <label>SSIDs:</label>
+                        <span>${Array.from(device.ssids).join(', ')}</span>
+                    </div>
+                    <div class="device-stat">
+                        <label>Channels:</label>
+                        <span>${Array.from(device.channels).sort().join(', ')}</span>
+                    </div>
+                    <div class="device-stat">
+                        <label>Last Seen:</label>
+                        <span>${new Date(lastDetection.received_at).toLocaleTimeString()}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Update table
+            displayDetectionsTable(devices);
+        }
+
+        function displayDetectionsTable(devices) {
+            const tbody = document.getElementById('detections-body');
+            tbody.innerHTML = '';
+            
+            Object.values(devices).forEach(device => {
+                const avgRssi = Math.round(device.rssiValues.reduce((a, b) => a + b) / device.rssiValues.length);
+                const lastDetection = device.detections[device.detections.length - 1];
+                
+                const row = tbody.insertRow();
+                row.insertCell().textContent = device.mac;
+                row.insertCell().textContent = new Date(lastDetection.received_at).toLocaleTimeString();
+                row.insertCell().textContent = device.detections.length;
+                row.insertCell().textContent = avgRssi + ' dBm';
+                row.insertCell().textContent = Array.from(device.channels).sort((a, b) => a - b).join(', ');
+                row.insertCell().textContent = Array.from(device.ssids).join(', ');
+            });
+        }
+
+        // Auto refresh every 5 seconds
+        setInterval(loadDevices, 5000);
+        loadDevices(); // Initial load
+    </script>
+</body>
+</html>

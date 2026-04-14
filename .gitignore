@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# builds
+dist/
+coverage/
+
+# runtime artifacts
+logs/
+session-state/
+*.log
+ide/
+release/*.zip
+
+# local environment and secrets
+.env
+.env.local
+.env.*.local
+pgpass.txt
+
+# editor and OS
+.vscode/
+.github/workflows/
+.DS_Store
+Thumbs.db
+
+# docker
+*.tar

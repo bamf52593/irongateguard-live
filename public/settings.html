@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - IoT Sentinel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        .navbar { background: #333; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar a { color: white; text-decoration: none; padding: 0 10px; margin: 0 5px; font-size: 14px; }
+        .navbar a:hover { color: #007bff; }
+        .navbar a.active { color: #007bff; font-weight: bold; }
+        .content { margin: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-label { flex: 1; }
+        .setting-label h3 { margin: 0 0 5px; }
+        .setting-label p { margin: 0; color: #666; font-size: 14px; }
+        select, input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .toggle { width: 50px; height: 30px; background: #ccc; border-radius: 15px; cursor: pointer; position: relative; }
+        .toggle.on { background: #28a745; }
+        .toggle .slider { width: 26px; height: 26px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: left 0.3s; }
+        .toggle.on .slider { left: 22px; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .danger-zone { background: #fff5f5; border: 2px solid #dc3545; border-radius: 8px; padding: 20px; margin-top: 20px; }
+        .danger-btn { background: #dc3545; }
+        .danger-btn:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="devices.html">Devices</a>
+        <a href="health.html">Health</a>
+        <a href="sentinels.html">Sentinels</a>
+        <a href="events.html">Events</a>
+        <a href="map.html">Threat Map</a>
+        <a href="api-keys.html">API Keys</a>
+        <a href="account.html">Account</a>
+        <a href="settings.html" class="active">Settings</a>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h1>System Settings</h1>
+
+            <div class="section">
+                <h2>General Settings</h2>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>System Name</h3>
+                        <p>Name of your IoT Sentinel deployment</p>
+                    </div>
+                    <input type="text" value="IoT Sentinel Server" style="width: 200px;">
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Timezone</h3>
+                        <p>System timezone for timestamps</p>
+                    </div>
+                    <select style="width: 200px;">
+                        <option>UTC</option>
+                        <option>EST</option>
+                        <option>PST</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Data Retention</h3>
+                        <p>Days to keep event data</p>
+                    </div>
+                    <input type="number" value="90" style="width: 100px;">
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Event Processing</h2>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Event Aggregation</h3>
+                        <p>Combine similar events within time window</p>
+                    </div>
+                    <div class="toggle on" onclick="this.classList.toggle('on')"><div class="slider"></div></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>RSSI Threshold Alerts</h3>
+                        <p>Alert when signal strength drops below</p>
+                    </div>
+                    <input type="number" value="-80" style="width: 100px;"> dBm
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Enable Real-time Analytics</h3>
+                        <p>Process events in real-time</p>
+                    </div>
+                    <div class="toggle on" onclick="this.classList.toggle('on')"><div class="slider"></div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Notifications</h2>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Email Notifications</h3>
+                        <p>Send alerts via email</p>
+                    </div>
+                    <div class="toggle on" onclick="this.classList.toggle('on')"><div class="slider"></div></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Alert Threshold</h3>
+                        <p>Minimum events to trigger alert</p>
+                    </div>
+                    <input type="number" value="10" style="width: 100px;">
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Slack Integration</h3>
+                        <p>Send alerts to Slack channel</p>
+                    </div>
+                    <div class="toggle" onclick="this.classList.toggle('on')"><div class="slider"></div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Security</h2>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>API Rate Limiting</h3>
+                        <p>Requests per minute per IP</p>
+                    </div>
+                    <input type="number" value="1000" style="width: 100px;">
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>Require HTTPS</h3>
+                        <p>Force all API connections over HTTPS</p>
+                    </div>
+                    <div class="toggle on" onclick="this.classList.toggle('on')"><div class="slider"></div></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <h3>IP Whitelisting</h3>
+                        <p>Restrict API access to trusted IPs</p>
+                    </div>
+                    <div class="toggle" onclick="this.classList.toggle('on')"><div class="slider"></div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <button>Save Settings</button>
+            </div>
+
+            <div class="danger-zone">
+                <h2 style="color: #dc3545; margin-top: 0;">Danger Zone</h2>
+                <p>These actions cannot be undone.</p>
+                <button class="danger-btn" onclick="if(confirm('Clear all events?')) alert('Events cleared')">Clear All Events</button>
+                <button class="danger-btn" onclick="if(confirm('Reset to defaults?')) alert('Settings reset')">Reset to Defaults</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

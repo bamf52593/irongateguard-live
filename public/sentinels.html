@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinels - IoT Sentinel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        .navbar { background: #333; padding: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar a { color: white; text-decoration: none; padding: 0 10px; margin: 0 5px; font-size: 14px; }
+        .navbar a:hover { color: #007bff; }
+        .navbar a.active { color: #007bff; font-weight: bold; }
+        .content { margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .sentinel-table { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; font-weight: bold; }
+        tr:hover { background: #f9f9f9; }
+        .status-online { color: #28a745; }
+        .status-offline { color: #dc3545; }
+        .refresh-btn { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="devices.html">Devices</a>
+        <a href="health.html">Health</a>
+        <a href="sentinels.html" class="active">Sentinels</a>
+        <a href="events.html">Events</a>
+        <a href="map.html">Threat Map</a>
+        <a href="api-keys.html">API Keys</a>
+        <a href="account.html">Account</a>
+        <a href="settings.html">Settings</a>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h1>Sentinel Devices</h1>
+            <button class="refresh-btn" onclick="loadSentinels()">Refresh</button>
+
+            <div class="sentinel-table">
+                <table id="sentinels-table">
+                    <thead>
+                        <tr>
+                            <th>Sentinel ID</th>
+                            <th>Status</th>
+                            <th>Events</th>
+                            <th>Last Seen</th>
+                            <th>Uptime</th>
+                            <th>Avg RSSI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sentinels-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadSentinels() {
+            try {
+                const response = await fetch('/v1/events', {
+                    headers: { 'X-API-Key': 'test-key' }
+                });
+                const data = await response.json();
+                displaySentinels(data.events);
+            } catch (error) {
+                console.error('Error loading sentinels:', error);
+            }
+        }
+
+        function displaySentinels(events) {
+            const sentinels = {};
+            events.forEach(event => {
+                const id = event.device_id;
+                if (!sentinels[id]) {
+                    sentinels[id] = {
+                        id,
+                        events: [],
+                        rssiValues: []
+                    };
+                }
+                sentinels[id].events.push(event);
+                sentinels[id].rssiValues.push(event.rssi);
+            });
+
+            const tbody = document.getElementById('sentinels-body');
+            tbody.innerHTML = '';
+
+            Object.values(sentinels).forEach(s => {
+                const lastEvent = s.events[s.events.length - 1];
+                const avgRssi = Math.round(s.rssiValues.reduce((a, b) => a + b) / s.rssiValues.length);
+                const lastSeen = new Date(lastEvent.received_at);
+                const minutesAgo = Math.floor((Date.now() - lastSeen) / 60000);
+
+                const row = tbody.insertRow();
+                row.insertCell().textContent = s.id;
+                row.insertCell().innerHTML = `<span class="status-online">● Online</span>`;
+                row.insertCell().textContent = s.events.length;
+                row.insertCell().textContent = minutesAgo + ' min ago';
+                row.insertCell().textContent = '99.8%';
+                row.insertCell().textContent = avgRssi + ' dBm';
+            });
+        }
+
+        setInterval(loadSentinels, 5000);
+        loadSentinels();
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+// =========================
+// CONFIG
+// =========================
+const API_BASE = "http://localhost:4000/v1";   // Your backend URL
+const API_KEY = "test-key";                    // Same key as backend
+const SENTINEL_ID = "sentinel-001";            // Matches firmware ID
+
+// =========================
+// RANDOM DATA GENERATORS
+// =========================
+function randomMac() {
+  return Array.from({ length: 6 })
+    .map(() => Math.floor(Math.random() * 256).toString(16).padStart(2, '0'))
+    .join(':')
+    .toUpperCase();
+}
+
+function randomRSSI() {
+  return -30 - Math.floor(Math.random() * 60); // -30 to -90
+}
+
+function randomChannel() {
+  return Math.floor(Math.random() * 11) + 1; // 1–12
+}
+
+function randomSSID() {
+  const names = ["HomeNetwork", "OfficeWiFi", "TestLab", "IoT-Network"];
+  return names[Math.floor(Math.random() * names.length)];
+}
+
+function randomThreatType() {
+  const threats = [
+    "new_device_detected",
+    "unauthorized_access_attempt",
+    "suspicious_traffic_detected",
+    "malware_signature_found",
+    "brute_force_attack",
+    "port_scan_detected",
+    "data_exfiltration_attempt",
+    "weak_encryption_detected",
+    "rogue_device_connected",
+    "firmware_tampering_attempt"
+  ];
+  return threats[Math.floor(Math.random() * threats.length)];
+}
+
+function randomSeverity() {
+  const severities = ["info", "warning", "alert", "critical"];
+  const weights = [0.4, 0.3, 0.2, 0.1]; // 40% info, 30% warning, 20% alert, 10% critical
+
+  const rand = Math.random();
+  let cumulative = 0;
+  for (let i = 0; i < weights.length; i++) {
+    cumulative += weights[i];
+    if (rand <= cumulative) return severities[i];
+  }
+  return "info";
+}
+
+function generateEventDetails(eventType, severity) {
+  const details = {
+    new_device_detected: `Unknown device ${randomMac()} joined network`,
+    unauthorized_access_attempt: `Failed login attempt from ${randomMac()} on port ${Math.floor(Math.random() * 1000) + 1000}`,
+    suspicious_traffic_detected: `Anomalous data pattern detected from ${randomMac()}`,
+    malware_signature_found: `Malware signature detected in traffic from ${randomMac()}`,
+    brute_force_attack: `Multiple failed authentication attempts from ${randomMac()}`,
+    port_scan_detected: `Port scanning activity detected from ${randomMac()}`,
+    data_exfiltration_attempt: `Large outbound data transfer detected from ${randomMac()}`,
+    weak_encryption_detected: `Device ${randomMac()} using deprecated encryption protocol`,
+    rogue_device_connected: `Unauthorized IoT device ${randomMac()} connected to network`,
+    firmware_tampering_attempt: `Firmware modification attempt detected on ${randomMac()}`
+  };
+
+  return details[eventType] || `Security event: ${eventType}`;
+}
+
+// =========================
+// SEND MOCK EVENT
+// =========================
+async function sendMockEvent() {
+  const eventType = randomThreatType();
+  const severity = randomSeverity();
+
+  const event = {
+    device_id: SENTINEL_ID,
+    events: [
+      {
+        event_type: eventType,
+        severity: severity,
+        timestamp: Math.floor(Date.now() / 1000),
+        mac: randomMac(),
+        rssi: randomRSSI(),
+        ssid: randomSSID(),
+        bssid: randomMac(),
+        channel: randomChannel(),
+        details: generateEventDetails(eventType, severity)
+      }
+    ]
+  };
+
+  console.log(`🚨 [${severity.toUpperCase()}] ${eventType}:`, event.events[0].details);
+
+  const res = await fetch(`${API_BASE}/events/ingest`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": API_KEY
+    },
+    body: JSON.stringify(event)
+  });
+
+  const data = await res.json();
+  console.log("Server response:", data);
+}
+
+// =========================
+// MAIN LOOP
+// =========================
+async function main() {
+  console.log("🚨 INTRUSION TEST ACTIVE - IronGate Sentinel simulating security breaches...");
+  console.log("Sending mixed threat events every 1.5 seconds...\n");
+
+  setInterval(() => {
+    sendMockEvent().catch(console.error);
+  }, 1500);
+}
+
+main();
+
