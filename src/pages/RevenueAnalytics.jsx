@@ -22,7 +22,7 @@ export default function RevenueAnalytics() {
   const [migrationStatus, setMigrationStatus] = useState(null);
   const [migrating, setMigrating] = useState(false);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/v1';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:404/v1';
   const token = localStorage.getItem('authToken');
   const currentUser = useMemo(() => {
     try {

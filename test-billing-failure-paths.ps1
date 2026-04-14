@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 # Billing failure-path tests for expected negative scenarios.
 
-$BaseUrl = "http://localhost:4000/v1"
+$BaseUrl = "http://localhost:404/v1"
 $results = @()
 
 function Add-Result {

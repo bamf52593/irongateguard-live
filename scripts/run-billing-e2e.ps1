@@ -30,7 +30,7 @@ function Wait-ForBackend {
 
     for ($i = 1; $i -le $MaxAttempts; $i++) {
         try {
-            Invoke-RestMethod -Uri "http://localhost:4000/v1/health" -Method Get | Out-Null
+            Invoke-RestMethod -Uri "http://localhost:404/v1/health" -Method Get | Out-Null
             Write-Host "Backend is healthy." -ForegroundColor Green
             return
         }
@@ -53,9 +53,9 @@ try {
     Invoke-Step -Name "Start PostgreSQL container" -Command "scripts\db-up.cmd"
     Invoke-Step -Name "Initialize database schema" -Command "scripts\db-init.cmd"
 
-    $existingPortOwner = Get-NetTCPConnection -LocalPort 4000 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty OwningProcess
+    $existingPortOwner = Get-NetTCPConnection -LocalPort 404 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty OwningProcess
     if ($existingPortOwner) {
-        Write-Step "Clearing existing process on port 4000"
+        Write-Step "Clearing existing process on port 404"
         Stop-Process -Id $existingPortOwner -Force
     }
 

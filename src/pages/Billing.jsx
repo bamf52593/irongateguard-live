@@ -22,7 +22,7 @@ const BillingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/v1';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:404/v1';
   const resolvedPlanDetails = subscription?.planDetails || {
     name: 'Unknown Plan',
     devices: 0,

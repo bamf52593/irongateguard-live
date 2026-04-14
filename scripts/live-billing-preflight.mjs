@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 
 dotenv.config();
 
-const apiBase = (process.env.BILLING_API_BASE || 'http://localhost:4000/v1').replace(/\/$/, '');
+const apiBase = (process.env.BILLING_API_BASE || 'http://localhost:404/v1').replace(/\/$/, '');
 const adminEmail = process.env.BILLING_ADMIN_EMAIL || 'admin@irongate.local';
 const adminPassword = process.env.BILLING_ADMIN_PASSWORD || 'Admin@123';
 const requireLiveKeys = ['true', '1', 'yes'].includes((process.env.LIVE_BILLING_REQUIRE_LIVE_KEYS || 'false').toLowerCase());

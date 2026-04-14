@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 # Verifies billing customer persistence in PostgreSQL across backend restarts.
 
-$BaseUrl = "http://localhost:4000/v1"
+$BaseUrl = "http://localhost:404/v1"
 $DbUrl = $env:DATABASE_URL
 
 if (-not $DbUrl -and (Test-Path ".env")) {

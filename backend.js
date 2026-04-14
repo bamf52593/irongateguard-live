@@ -1219,7 +1219,7 @@ app.get('*', (req, res) => {
   res.sendFile(hasBuiltFrontend ? distIndexPath : legacyIndexPath);
 });
 
-const PORT = Number.parseInt(process.env.PORT || process.env.API_PORT || '4000', 10);
+const PORT = Number.parseInt(process.env.PORT || process.env.API_PORT || '404', 10);
 
 function shouldEnableMeteredSyncScheduler() {
   const raw = (process.env.METERED_SYNC_SCHEDULER_ENABLED || 'false').toLowerCase();

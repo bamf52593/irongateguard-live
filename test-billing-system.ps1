@@ -2,7 +2,7 @@
 # IronGate Stripe Payment System - Full Integration Test
 # This script tests all billing endpoints
 
-$BaseUrl = "http://localhost:4000/v1"
+$BaseUrl = "http://localhost:404/v1"
 $testResults = @()
 
 function Add-TestResult {

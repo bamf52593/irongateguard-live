@@ -18,7 +18,7 @@ function Stop-PortListener {
     }
 }
 
-Stop-PortListener -Port 4000
+Stop-PortListener -Port 404
 foreach ($port in 3000..3010) {
     Stop-PortListener -Port $port
 }

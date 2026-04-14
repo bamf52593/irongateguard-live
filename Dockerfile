@@ -9,6 +9,6 @@ COPY . .
 RUN npm run build
 
 ENV NODE_ENV=production
-EXPOSE 4000
+EXPOSE 404
 
 CMD ["npm", "run", "backend"]

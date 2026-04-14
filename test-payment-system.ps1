@@ -1,6 +1,6 @@
 # IronGate Payment System - Status Report
 
-$BaseUrl = "http://localhost:4000/v1"
+$BaseUrl = "http://localhost:404/v1"
 
 Write-Host "IRONGATE PAYMENT SYSTEM - LIVE" -ForegroundColor Green
 Write-Host ""

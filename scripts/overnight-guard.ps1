@@ -122,7 +122,7 @@ if ($LASTEXITCODE -ne 0) {
 
 $frontendPort = Get-FrontendPort
 $services = @()
-$services += Start-WatchService -Name "backend" -Command "npm run backend" -Ports @(4000) -HealthUrl "http://localhost:4000/health"
+$services += Start-WatchService -Name "backend" -Command "npm run backend" -Ports @(404) -HealthUrl "http://localhost:404/health"
 $services += Start-WatchService -Name "frontend" -Command "npm run dev" -Ports @($frontendPort) -HealthUrl ("http://localhost:{0}/" -f $frontendPort)
 
 if ($IncludeSentinel) {

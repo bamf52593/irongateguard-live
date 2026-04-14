@@ -17,6 +17,6 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(4000, () => {
-  console.log('Test server listening on port 4000');
+server.listen(404, () => {
+  console.log('Test server listening on port 404');
 });
