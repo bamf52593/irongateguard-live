@@ -27,6 +27,7 @@ import {
   completeWebhookEventProcessing,
   failWebhookEventProcessing,
   validateCoupon,
+  calculateUsageSummary,
   PLANS,
   TRIAL_CONFIG,
   AVAILABLE_COUPONS
@@ -55,6 +56,59 @@ function isWebhookConfigured() {
   if (!secret) return false;
   if (secret.includes('YOUR_WEBHOOK_SECRET_HERE')) return false;
   return secret.startsWith('whsec_');
+}
+
+function isAdminReviewUser(req) {
+  return req.user?.role === 'admin';
+}
+
+async function getAdminReviewBillingData() {
+  const planDetails = PLANS.scale;
+
+  let devices = 0;
+  let users = 1;
+  let events = 0;
+
+  if (isDbEnabled()) {
+    const [devicesResult, usersResult, eventsResult] = await Promise.all([
+      query('SELECT COUNT(*) as count FROM devices'),
+      query('SELECT COUNT(*) as count FROM users'),
+      query(`SELECT COUNT(*) as count FROM events WHERE created_at > NOW() - INTERVAL '30 days'`)
+    ]);
+
+    devices = parseInt(devicesResult.rows[0]?.count || 0, 10);
+    users = parseInt(usersResult.rows[0]?.count || 0, 10);
+    events = parseInt(eventsResult.rows[0]?.count || 0, 10);
+  }
+
+  const usage = {
+    devices,
+    users,
+    events,
+    ...calculateUsageSummary({
+      devices,
+      users,
+      events,
+      limits: {
+        devices: -1,
+        users: planDetails.users,
+        events: -1
+      }
+    })
+  };
+
+  return {
+    subscription: {
+      status: 'active',
+      plan: 'scale',
+      planDetails,
+      currentPeriodStart: null,
+      currentPeriodEnd: null,
+      stripeSubscriptionId: null,
+      isAdminBypass: true
+    },
+    usage
+  };
 }
 
 async function auditAdminAction({ userId, action, resourceType, resourceId, changes, ipAddress }) {
@@ -261,6 +315,15 @@ export function setupBillingEndpoints(app) {
         });
       }
 
+      if (isAdminReviewUser(req)) {
+        const adminBilling = await getAdminReviewBillingData();
+        return res.json({
+          success: true,
+          subscription: adminBilling.subscription,
+          usage: adminBilling.usage
+        });
+      }
+
       const subscription = await getSubscriptionStatus(userId);
       const usage = await getUsageMetrics(userId);
 
@@ -287,6 +350,19 @@ export function setupBillingEndpoints(app) {
         return res.status(401).json({
           success: false,
           error: 'Unauthorized'
+        });
+      }
+
+      if (isAdminReviewUser(req)) {
+        return res.json({
+          success: true,
+          enforcement: {
+            requiresUpgrade: false,
+            suggestedPlan: null,
+            projectedOverageMonthly: '$0.00',
+            projectedOverageMonthlyCents: 0,
+            message: 'Admin review mode bypasses billing enforcement.'
+          }
         });
       }
 
