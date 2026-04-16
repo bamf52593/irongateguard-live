@@ -125,17 +125,6 @@ export default function Login() {
             <p>
               New here? <Link to="/signup">Create your account</Link>.
             </p>
-            <p><strong>Demo Accounts:</strong></p>
-            <ul>
-              <li>Admin: admin@irongate.local</li>
-              <li>Operator: operator@irongate.local</li>
-              <li>Analyst: analyst@irongate.local</li>
-              <li>Viewer: viewer@irongate.local</li>
-            </ul>
-            <p><em>All demo passwords: their role name + "@123"</em></p>
-            <p style={{marginTop: '1rem', fontSize: '0.85rem', opacity: 0.7}}>
-              Example: Operator@123 for operator account
-            </p>
           </div>
         </div>
       </div>

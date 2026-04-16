@@ -19,17 +19,17 @@ services:
       - key: LIVE_BILLING_REQUIRE_LIVE_KEYS
         value: true
       - key: BILLING_API_BASE
-        value: https://irongateguard.com/v1
+        value: https://codie-blondell-1.onrender.com/v1
       - key: DATABASE_URL
         fromDatabase:
           name: irongate-db
           property: connectionString
       - key: FRONTEND_URL
-        value: https://irongateguard.com
+        value: https://codie-blondell-1.onrender.com
       - key: VITE_API_URL
-        value: https://irongateguard.com/v1
+        value: https://codie-blondell-1.onrender.com/v1
       - key: CORS_ORIGIN
-        value: https://irongateguard.com
+        value: https://codie-blondell-1.onrender.com
       - key: FROM_EMAIL
         sync: false
       - key: SUPPORT_EMAIL
