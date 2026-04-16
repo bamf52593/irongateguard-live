@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import AppErrorBoundary from './components/AppErrorBoundary';
 import Login from './pages/Login';
@@ -27,6 +27,70 @@ import RevenueAnalytics from './pages/RevenueAnalytics';
 function PrivateRoute({ children }) {
   const isAuthenticated = !!localStorage.getItem('authToken');
   return isAuthenticated ? children : <Navigate to="/login" replace />;
+}
+
+const PUBLIC_SEO_BY_PATH = {
+  '/': {
+    title: 'IronGate | Security Monitoring for Every Business Size',
+    description: 'IronGate helps businesses monitor devices, detect threats early, and stay secure with plain-English security visibility.'
+  },
+  '/plans': {
+    title: 'Compare Plans | IronGate',
+    description: 'Compare IronGate Starter, Growth, and Scale plans to find the right fit for your business and IT maturity level.'
+  },
+  '/demo-request': {
+    title: 'Request a Demo | IronGate',
+    description: 'Book a guided IronGate demo and get rollout recommendations for your business size and technical needs.'
+  },
+  '/signup': {
+    title: 'Create Your Account | IronGate',
+    description: 'Create an IronGate account and start monitoring your business security posture in minutes.'
+  },
+  '/login': {
+    title: 'Sign In | IronGate',
+    description: 'Sign in to IronGate to access your security dashboard, alerts, and monitoring tools.'
+  }
+};
+
+function setOrCreateMeta(name, content) {
+  let meta = document.querySelector(`meta[name="${name}"]`);
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('name', name);
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', content);
+}
+
+function setCanonicalUrl(url) {
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', url);
+}
+
+function SeoMetaManager() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const isPublicPath = Object.prototype.hasOwnProperty.call(PUBLIC_SEO_BY_PATH, location.pathname);
+    const seo = PUBLIC_SEO_BY_PATH[location.pathname] || {
+      title: 'IronGate | IoT Sentinel Dashboard',
+      description: 'IronGate security monitoring platform for device visibility and threat detection.'
+    };
+
+    document.title = seo.title;
+    setOrCreateMeta('description', seo.description);
+    setOrCreateMeta('robots', isPublicPath ? 'index,follow' : 'noindex,nofollow');
+
+    const canonicalPath = location.pathname === '/' ? '' : location.pathname;
+    setCanonicalUrl(`${window.location.origin}${canonicalPath}`);
+  }, [location.pathname]);
+
+  return null;
 }
 
 function App() {
@@ -170,6 +234,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <SeoMetaManager />
       {isAuthenticated && <a href="#main-content" className="skip-link">Skip to main content</a>}
       <div className="toast-stack" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => (

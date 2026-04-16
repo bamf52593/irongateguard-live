@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Keep authenticated app screens out of search results
+Disallow: /overview
+Disallow: /devices
+Disallow: /system-health
+Disallow: /sentinels
+Disallow: /events
+Disallow: /threat-map
+Disallow: /attack-tracing
+Disallow: /api-keys
+Disallow: /users
+Disallow: /revenue
+Disallow: /billing
+Disallow: /settings
+Disallow: /welcome
+
+Sitemap: https://codie-blondell-1.onrender.com/sitemap.xml
