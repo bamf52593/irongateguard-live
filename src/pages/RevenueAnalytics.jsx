@@ -310,24 +310,32 @@ export default function RevenueAnalytics() {
       </div>
 
       <section className="card recommendation-card">
-        <h2>Launch Readiness</h2>
+        <h2>Production Setup Checklist</h2>
+        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #888)', marginBottom: '0.75rem' }}>
+          These are one-time Render environment variable tasks. They do <strong>not</strong> block you or customers from using the dashboard — they only affect Stripe payments and email delivery.
+        </p>
         {launchReadiness ? (
           <>
             <p>
-              Status: <strong>{launchReadiness.ready ? 'READY FOR LIVE CUTOVER' : `BLOCKED BY ${launchReadiness.blockerCount} ITEM(S)`}</strong>
+              Status: <strong>{launchReadiness.ready ? '✅ All systems go' : `⚠️ ${launchReadiness.blockerCount} setup task(s) remaining — site is still fully accessible`}</strong>
             </p>
             <ul className="activity-list" style={{ marginTop: '1rem' }}>
               {launchReadiness.checks.map((check) => (
                 <li key={check.key}>
                   <strong>{check.label}</strong>
-                  <span>{check.ok ? 'PASS' : 'ACTION NEEDED'}</span>
+                  <span style={{ color: check.ok ? 'var(--color-success, #22c55e)' : 'var(--color-warning, #f59e0b)' }}>{check.ok ? '✅ PASS' : '⚙️ SET IN RENDER DASHBOARD'}</span>
                   <em>{check.detail}</em>
                 </li>
               ))}
             </ul>
+            {!launchReadiness.ready && (
+              <p style={{ fontSize: '0.8rem', marginTop: '1rem', color: 'var(--color-text-muted, #888)' }}>
+                To fix: go to <strong>render.com → irongate service → Environment</strong> and add the missing keys.
+              </p>
+            )}
           </>
         ) : (
-          <p>Launch readiness data is not available yet.</p>
+          <p>Production checklist data is not available yet.</p>
         )}
       </section>
 

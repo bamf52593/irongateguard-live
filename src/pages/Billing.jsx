@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 import '../styles/billing.css';
 
+const isAdmin = () => { try { return JSON.parse(localStorage.getItem('user') || '{}')?.role === 'admin'; } catch { return false; } };
+
 const BillingPage = () => {
   const [plans, setPlans] = useState([]);
   const [subscription, setSubscription] = useState(null);
@@ -359,9 +361,15 @@ const BillingPage = () => {
       )}
 
       {!stripeConfigured && (
-        <div className="billing-error">
-          Payments are not configured yet. Add STRIPE_SECRET_KEY and STRIPE_PUBLIC_KEY in .env, then restart backend.
-        </div>
+        isAdmin() ? (
+          <div className="billing-error" style={{ background: 'rgba(245,158,11,0.1)', borderColor: '#f59e0b', color: '#b45309' }}>
+            <strong>Admin note:</strong> Stripe is not configured yet. Customers cannot subscribe until you add <code>STRIPE_SECRET_KEY</code> and <code>STRIPE_PUBLIC_KEY</code> in the Render dashboard Environment settings. This page still works for admin review.
+          </div>
+        ) : (
+          <div className="billing-error">
+            Payments are not configured yet. Please contact support.
+          </div>
+        )
       )}
 
       {refreshing && <div className="billing-inline-status">Refreshing billing data...</div>}
