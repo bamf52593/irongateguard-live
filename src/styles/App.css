@@ -368,6 +368,94 @@ body::before {
   font-size: 13px;
 }
 
+.section-intro {
+  color: #c7d8e8;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.protection-grid {
+  margin-bottom: 20px;
+}
+
+.onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 18px 0 20px;
+}
+
+.onboarding-step {
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 14px;
+  background: rgba(3, 13, 21, 0.8);
+}
+
+.onboarding-step strong {
+  display: block;
+  color: #f4fbff;
+  margin-bottom: 6px;
+}
+
+.onboarding-step p {
+  color: #bdd2e4;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.install-snippets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.snippet-block {
+  border: 1px solid rgba(0, 255, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(4, 10, 16, 0.95);
+  padding: 12px;
+}
+
+.snippet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.snippet-header h3 {
+  color: #ecf8ff;
+  font-size: 15px;
+}
+
+.snippet-copy {
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  background: rgba(0, 255, 255, 0.08);
+  color: #dff9ff;
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.snippet-copy:hover {
+  background: rgba(0, 255, 255, 0.16);
+}
+
+.snippet-block pre {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(0, 255, 255, 0.15);
+  color: #afffd9;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
 /* Metrics */
 .metric {
   font-size: 36px;
