@@ -5,7 +5,30 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { sendDemoRequestNotification } from './email-service.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+function isNonProductionSecret(value = '') {
+  const safeValue = String(value || '').trim();
+  if (!safeValue) {
+    return true;
+  }
+
+  return [
+    'your-super-secret-key-change-this-in-production',
+    'your-secret-key-change-in-production',
+    'change-this'
+  ].some((token) => safeValue.includes(token));
+}
+
+function getJwtSecret() {
+  const secret = String(process.env.JWT_SECRET || '').trim();
+
+  if (process.env.NODE_ENV === 'production' && isNonProductionSecret(secret)) {
+    throw new Error('JWT_SECRET must be set to a strong production value');
+  }
+
+  return secret || 'your-secret-key-change-in-production';
+}
+
+const JWT_SECRET = getJwtSecret();
 const JWT_EXPIRY = '7d';
 
 // Mock user database (replace with real database in production)

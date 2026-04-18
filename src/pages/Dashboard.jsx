@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import DownloadButton from '../components/DownloadButton';
 import axios from 'axios';
 
 const statDescriptions = {
@@ -162,6 +163,9 @@ export default function Dashboard() {
 
   return (
     <div className="page">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <DownloadButton />
+      </div>
       <h1>Overview</h1>
       <div className="viking-banner">
         <h2>Security visibility that is easy to understand</h2>

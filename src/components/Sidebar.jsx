@@ -1,4 +1,5 @@
 import React from 'react';
+import DownloadButton from './DownloadButton';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import lockIcon from '../assets/old-lock.png';
 import '../styles/Sidebar.css';
@@ -31,6 +32,9 @@ export default function Sidebar({ billingLocked = false }) {
           <img src={lockIcon} alt="Old iron lock" className="brand-icon" />
           <h2>IronGate</h2>
         </div>
+      </div>
+      <div style={{ padding: '12px', textAlign: 'center' }}>
+        <DownloadButton />
       </div>
       <nav className="sidebar-nav">
         <div className="sidebar-nav-links">

@@ -990,45 +990,6 @@ app.get('/v1/dashboard', async (req, res) => {
   });
 });
 
-app.get('/v1/devices', async (req, res) => {
-  try {
-    const devicesData = await getDevicesData();
-    res.json({ devices: devicesData });
-  } catch (error) {
-    console.error('Failed to load devices from DB, falling back to memory:', error.message);
-    res.json({ devices });
-  }
-});
-
-app.get('/v1/sentinels', (req, res) => {
-  // Simulate dynamic sentinel data
-  const now = Date.now();
-  const sentinelsData = sentinels.map(sentinel => ({
-    ...sentinel,
-    events: sentinel.events + Math.floor(Math.random() * 3), // Add 0-2 events
-    lastCheckIn: new Date(now - Math.random() * 60000).toISOString(), // Within last minute
-    avgRssi: (-60 + Math.random() * 20).toFixed(0) // Vary RSSI
-  }));
-
-  res.json({ sentinels: sentinelsData });
-});
-
-app.get('/v1/health', (req, res) => {
-  // Simulate varying system metrics
-  const baseCpu = 46.1;
-  const baseRam = 34.2;
-  const variation = (Math.random() - 0.5) * 10; // ±5% variation
-
-  res.json({
-    cpu: Math.max(0, Math.min(100, baseCpu + variation)),
-    ram: Math.max(0, Math.min(100, baseRam + variation)),
-    uptime: 99.8,
-    database: isDbEnabled() ? 'Connected' : 'Fallback mode',
-    heartbeat: 'Online',
-    apiResponseMs: Math.floor(20 + Math.random() * 10),
-    eventsCount: events.length
-  });
-});
 
 // =========================
 // ATTACK TRACING ENDPOINTS

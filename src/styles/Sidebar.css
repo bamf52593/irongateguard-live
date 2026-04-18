@@ -1,3 +1,45 @@
+/* Global Download Button Styles */
+.global-download-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid rgba(0,255,255,0.18);
+  border-radius: 8px;
+  margin: 18px 16px 12px 16px;
+  padding: 14px 10px 10px 10px;
+  box-shadow: 0 2px 12px rgba(0,255,255,0.07);
+}
+
+.global-download-btn input,
+.global-download-btn select {
+  background: #181a2b;
+  color: #00ffff;
+  border: 1px solid #00ffff44;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.global-download-btn button {
+  background: linear-gradient(90deg, #00ffff 0%, #f7dd9b 100%);
+  color: #181a2b;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 0;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 4px;
+  box-shadow: 0 1px 6px rgba(0,255,255,0.08);
+}
+.global-download-btn button:hover {
+  background: linear-gradient(90deg, #f7dd9b 0%, #00ffff 100%);
+  color: #181a2b;
+}
 /* Sidebar Styles */
 .sidebar {
   width: 240px;
