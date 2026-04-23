@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { notify } from '../utils/toast';
 import { trackEvent } from '../utils/analytics';
+import DownloadButton from '../components/DownloadButton';
 
 export default function Signup() {
   const [fullName, setFullName] = useState('');
@@ -20,6 +21,8 @@ export default function Signup() {
     setError('');
     setLoading(true);
 
+    trackEvent('signup_submitted', { email });
+
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '/v1';
       const response = await fetch(`${apiUrl}/auth/signup`, {
@@ -35,13 +38,15 @@ export default function Signup() {
       const data = await response.json();
 
       if (!response.ok) {
+        trackEvent('signup_failed', { email, error: data.error });
         throw new Error(data.error || 'Signup failed');
       }
 
+      trackEvent('signup_success', { email, userId: data.user?.id });
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       window.dispatchEvent(new Event('auth-login-success'));
-      notify('Account created. Welcome to IronGate.', 'success');
+      notify('Account created. Welcome to irongateguard.', 'success');
       navigate('/welcome');
     } catch (err) {
       setError(err.message || 'Unable to create account');
@@ -56,8 +61,9 @@ export default function Signup() {
       <div className="login-container">
         <div className="login-card">
           <div className="login-header">
-            <h1>Get Started</h1>
-            <p>Create your IronGate account in under a minute</p>
+            <h1>Start Free – No Credit Card Required</h1>
+            <h2 style={{ fontWeight: 400, color: '#f7dd9b', marginTop: '0.5em' }}>Instant access to security and operations tools for your business.</h2>
+            <p>Create your irongateguard account in under a minute and unlock all features. Upgrade anytime.</p>
           </div>
 
           <form onSubmit={handleSignup}>
@@ -105,11 +111,20 @@ export default function Signup() {
             <button
               type="submit"
               className="btn btn-primary btn-block"
+              style={{ fontSize: '1.1em', padding: '0.8em 0' }}
               disabled={loading}
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? 'Creating account...' : 'Start Free Now'}
             </button>
+
           </form>
+
+          {/* DownloadButton for setup script */}
+          <div style={{ marginTop: '2em', textAlign: 'center' }}>
+            <h3>Download Setup Script</h3>
+            <p style={{ color: '#bbb', marginBottom: '0.5em' }}>After creating your account, download the setup script to connect your first device.</p>
+            <DownloadButton />
+          </div>
 
           <div className="login-info">
             <p>

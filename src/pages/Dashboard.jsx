@@ -169,7 +169,7 @@ export default function Dashboard() {
       <h1>Overview</h1>
       <div className="viking-banner">
         <h2>Security visibility that is easy to understand</h2>
-        <p>IronGate turns device activity, health signals, and incident data into a clear view so teams can make faster, better decisions.</p>
+        <p>irongateguardguard turns device activity, health signals, and incident data into a clear view so teams can make faster, better decisions.</p>
         <div className="trust-strip">
           <span>Live status</span>
           <span>Clear priorities</span>
@@ -182,7 +182,7 @@ export default function Dashboard() {
             <h2>{item.value}</h2>
             <p>{statDisplayLabels[item.label] || item.label}</p>
             <span className="badge">{item.change}</span>
-            <small className="card-support-text">{statDescriptions[item.label] || 'A live performance signal from the IronGate platform.'}</small>
+            <small className="card-support-text">{statDescriptions[item.label] || 'A live performance signal from the irongateguardguard platform.'}</small>
           </div>
         ))}
       </div>

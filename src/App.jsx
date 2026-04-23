@@ -31,24 +31,24 @@ function PrivateRoute({ children }) {
 
 const PUBLIC_SEO_BY_PATH = {
   '/': {
-    title: 'IronGate | Security Monitoring for Every Business Size',
-    description: 'IronGate helps businesses monitor devices, detect threats early, and stay secure with plain-English security visibility.'
+    title: 'irongateguardguard | Security Monitoring for Every Business Size',
+    description: 'irongateguardguard helps businesses monitor devices, detect threats early, and stay secure with plain-English security visibility.'
   },
   '/plans': {
-    title: 'Compare Plans | IronGate',
-    description: 'Compare IronGate Starter, Growth, and Scale plans to find the right fit for your business and IT maturity level.'
+    title: 'Compare Plans | irongateguardguard',
+    description: 'Compare irongateguardguard Starter, Growth, and Scale plans to find the right fit for your business and IT maturity level.'
   },
   '/demo-request': {
-    title: 'Request a Demo | IronGate',
-    description: 'Book a guided IronGate demo and get rollout recommendations for your business size and technical needs.'
+    title: 'Request a Demo | irongateguardguard',
+    description: 'Book a guided irongateguardguard demo and get rollout recommendations for your business size and technical needs.'
   },
   '/signup': {
-    title: 'Create Your Account | IronGate',
-    description: 'Create an IronGate account and start monitoring your business security posture in minutes.'
+    title: 'Create Your Account | irongateguardguard',
+    description: 'Create an irongateguardguard account and start monitoring your business security posture in minutes.'
   },
   '/login': {
-    title: 'Sign In | IronGate',
-    description: 'Sign in to IronGate to access your security dashboard, alerts, and monitoring tools.'
+    title: 'Sign In | irongateguardguard',
+    description: 'Sign in to irongateguardguard to access your security dashboard, alerts, and monitoring tools.'
   }
 };
 
@@ -78,8 +78,8 @@ function SeoMetaManager() {
   useEffect(() => {
     const isPublicPath = Object.prototype.hasOwnProperty.call(PUBLIC_SEO_BY_PATH, location.pathname);
     const seo = PUBLIC_SEO_BY_PATH[location.pathname] || {
-      title: 'IronGate | IoT Sentinel Dashboard',
-      description: 'IronGate security monitoring platform for device visibility and threat detection.'
+      title: 'irongateguardguard | IoT Sentinel Dashboard',
+      description: 'irongateguardguard security monitoring platform for device visibility and threat detection.'
     };
 
     document.title = seo.title;

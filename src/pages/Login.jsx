@@ -84,7 +84,7 @@ export default function Login() {
       <div className="login-container">
         <div className="login-card">
           <div className="login-header">
-            <h1>IronGate</h1>
+            <h1>irongateguard</h1>
             <p>Security Visibility Platform</p>
           </div>
 
@@ -96,7 +96,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@irongate.local"
+                placeholder="admin@irongateguard.com"
                 required
                 disabled={loading}
               />

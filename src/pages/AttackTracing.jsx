@@ -194,7 +194,7 @@ export default function AttackTracing() {
     <div className="page">
       <h1>Incident Review</h1>
       <div className="banner-panel">
-        <p>IronGate can trace suspicious activity to an estimated city-level origin, link related events, and present a readable incident timeline.</p>
+        <p>irongateguardguard can trace suspicious activity to an estimated city-level origin, link related events, and present a readable incident timeline.</p>
       </div>
 
       <div className="card-grid">

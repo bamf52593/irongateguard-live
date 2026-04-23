@@ -52,3 +52,11 @@ databases:
     plan: starter
     databaseName: irongate
     user: irongate
+
+- type: web
+    name: irongate-frontend
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+    autoDeploy: true

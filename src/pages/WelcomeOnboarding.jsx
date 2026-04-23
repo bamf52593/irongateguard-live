@@ -32,7 +32,7 @@ const paths = {
     steps: [
       {
         title: 'Connect your devices',
-        body: 'Head to Devices to register your hardware. IronGate will start monitoring them immediately.',
+        body: 'Head to Devices to register your hardware. irongateguardguard will start monitoring them immediately.',
         cta: 'Manage Devices',
         to: '/devices'
       },
@@ -85,7 +85,7 @@ export default function WelcomeOnboarding() {
     <div className="page landing-page">
       <section className="card landing-pricing-preview">
         <span className="landing-kicker">Welcome</span>
-        <h1>{user?.full_name ? `Welcome, ${user.full_name}.` : 'Welcome to IronGate.'}</h1>
+        <h1>{user?.full_name ? `Welcome, ${user.full_name}.` : 'Welcome to irongateguardguard.'}</h1>
         <p>Your account is ready. Tell us where you're starting from and we'll point you in the right direction.</p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '20px' }}>
           {Object.entries(paths).map(([key, path]) => (

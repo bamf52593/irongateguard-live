@@ -37,7 +37,7 @@ export default function ApiKeys() {
       <h1>Integrations</h1>
 
       <div className="banner-panel">
-        <p>Create and manage API keys for systems that connect to IronGate.</p>
+        <p>Create and manage API keys for systems that connect to irongateguardguard.</p>
       </div>
 
       <div className="page-action-bar">

@@ -332,7 +332,7 @@ const BillingPage = () => {
     <div className="billing-page">
       <div className="billing-header">
         <h1>Billing & Subscription</h1>
-        <p>Manage your IronGate subscription</p>
+        <p>Manage your irongateguardguard subscription</p>
       </div>
 
       {infoMessage && <div className="billing-inline-status">{infoMessage}</div>}

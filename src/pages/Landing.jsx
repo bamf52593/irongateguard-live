@@ -5,7 +5,7 @@ import { trackEvent } from '../utils/analytics';
 const valueBlocks = [
   {
     title: 'Know immediately when something is wrong',
-    body: 'IronGate shows you the most important alerts first — plain and simple — so you can act without needing a security background.'
+    body: 'irongateguardguard shows you the most important alerts first — plain and simple — so you can act without needing a security background.'
   },
   {
     title: 'See everything in one place',
@@ -26,7 +26,7 @@ const trustPoints = [
 const faqs = [
   {
     q: 'Do I need to be technical to use this?',
-    a: 'No. IronGate is built for business owners and managers too. The dashboard uses plain language, and setup takes minutes — no IT background needed.'
+    a: 'No. irongateguardguard is built for business owners and managers too. The dashboard uses plain language, and setup takes minutes — no IT background needed.'
   },
   {
     q: 'How fast can I get started?',
@@ -44,12 +44,12 @@ const faqs = [
 
 const testimonials = [
   {
-    quote: 'I\'m a business owner, not an IT person. IronGate was the first security tool I actually understood on day one.',
+    quote: 'I\'m a business owner, not an IT person. irongateguardguard was the first security tool I actually understood on day one.',
     author: 'Owner',
     company: 'Local Retail Chain'
   },
   {
-    quote: 'We have one IT person for 40 staff. IronGate lets him watch everything without burning out on manual checks.',
+    quote: 'We have one IT person for 40 staff. irongateguardguard lets him watch everything without burning out on manual checks.',
     author: 'Operations Manager',
     company: 'Regional Service Company'
   },
@@ -114,15 +114,15 @@ export default function Landing() {
         <div className="landing-copy">
           <span className="landing-kicker">Security operations that drive business confidence</span>
           <span className="landing-kicker">Protects businesses of every size — no IT background needed</span>
-          <h1>Know your business is protected. Without needing an IT degree.</h1>
+          <h1>Protect Your Business. Grow With Confidence.</h1>
+          <h2 style={{ fontWeight: 400, color: '#f7dd9b', marginTop: '0.5em' }}>All-in-one security and operations for every business size.</h2>
           <p>
-            Whether you're a shop owner with 10 devices or an enterprise with hundreds — IronGate watches
-            your network, catches threats early, and shows you what matters in plain English.
+            irongateguardguard gives you instant visibility, actionable alerts, and peace of mind—no IT degree required. Start free, upgrade anytime, and scale as you grow.
           </p>
           <div className="landing-actions">
-            <Link to="/signup" className="landing-button primary" onClick={() => trackEvent('start_free_clicked', { source: 'landing_hero' })}>Start Free Account</Link>
-            <Link to="/plans" className="landing-button secondary" onClick={() => trackEvent('view_plans_clicked', { source: 'landing_hero' })}>View Plans</Link>
-            <Link to="/login" className="landing-button tertiary" onClick={() => trackEvent('sign_in_clicked', { source: 'landing_hero' })}>Sign In</Link>
+            <Link to="/signup" className="landing-button primary" style={{ fontSize: '1.2em', padding: '1em 2em' }} onClick={() => trackEvent('start_free_clicked', { source: 'landing_hero' })}>Start Free</Link>
+            <Link to="/plans" className="landing-button secondary" style={{ fontSize: '1.1em' }} onClick={() => trackEvent('view_plans_clicked', { source: 'landing_hero' })}>See Pricing</Link>
+            <Link to="/login" className="landing-button tertiary" style={{ fontSize: '1.1em' }} onClick={() => trackEvent('sign_in_clicked', { source: 'landing_hero' })}>Sign In</Link>
           </div>
           <div className="landing-trust-strip">
             {trustPoints.map((item) => (

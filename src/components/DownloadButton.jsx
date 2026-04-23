@@ -8,22 +8,22 @@ export default function DownloadButton({ defaultApiKey = '', defaultOs = 'window
   const sentinelId = 'office-device'; // fallback global default
 
   const windowsCommand = [
-    `$env:IRONGATE_API_BASE = "${apiBase}"`,
-    `$env:IRONGATE_API_KEY = "${apiKey || 'test-key'}"`,
-    `$env:IRONGATE_SENTINEL_ID = "${sentinelId}"`,
+    `$env:irongateguardguard_API_BASE = "${apiBase}"`,
+    `$env:irongateguardguard_API_KEY = "${apiKey || 'test-key'}"`,
+    `$env:irongateguardguard_SENTINEL_ID = "${sentinelId}"`,
     'npm run sentinel'
   ].join('\n');
 
   const macLinuxCommand = [
-    `export IRONGATE_API_BASE="${apiBase}"`,
-    `export IRONGATE_API_KEY="${apiKey || 'test-key'}"`,
-    `export IRONGATE_SENTINEL_ID="${sentinelId}"`,
+    `export irongateguardguard_API_BASE="${apiBase}"`,
+    `export irongateguardguard_API_KEY="${apiKey || 'test-key'}"`,
+    `export irongateguardguard_SENTINEL_ID="${sentinelId}"`,
     'npm run sentinel'
   ].join('\n');
 
   const downloadScript = (value, osType) => {
     try {
-      const filename = osType === 'windows' ? 'irongate-setup.ps1' : 'irongate-setup.sh';
+      const filename = osType === 'windows' ? 'irongateguardguard-setup.ps1' : 'irongateguardguard-setup.sh';
       const blob = new Blob([`${value}\n`], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');

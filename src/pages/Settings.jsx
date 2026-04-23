@@ -33,7 +33,7 @@ export default function Settings() {
       <h1>Preferences</h1>
 
       <div className="banner-panel">
-        <p>Adjust how IronGate stores data, sends notifications, and applies security rules.</p>
+        <p>Adjust how irongateguardguard stores data, sends notifications, and applies security rules.</p>
       </div>
 
       <div className="page-action-bar">

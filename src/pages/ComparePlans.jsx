@@ -26,7 +26,9 @@ export default function ComparePlans() {
     ? (() => {
         const counts = {};
         Object.values(quizAnswers).forEach((p) => { counts[p] = (counts[p] || 0) + 1; });
-        return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+        const result = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+        trackEvent('plan_quiz_completed', { result, answers: quizAnswers });
+        return result;
       })()
     : null;
 
@@ -116,7 +118,7 @@ export default function ComparePlans() {
               ))}
             </div>
             <div className="landing-actions" style={{ marginTop: '20px' }}>
-              <Link to={isAuthenticated ? '/billing' : '/signup'} className="landing-button primary" onClick={() => trackEvent('choose_plan_clicked', { source: 'plan_card', planKey: plan.key })}>Choose {plan.name}</Link>
+              <Link to={isAuthenticated ? '/billing' : '/signup'} className="landing-button primary" onClick={() => trackEvent('choose_plan_clicked', { source: 'plan_card', planKey: plan.key, isAuthenticated })}>Choose {plan.name}</Link>
             </div>
           </article>
         ))}

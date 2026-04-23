@@ -30,7 +30,7 @@ export default function Sidebar({ billingLocked = false }) {
       <div className="sidebar-header">
         <div className="brand">
           <img src={lockIcon} alt="Old iron lock" className="brand-icon" />
-          <h2>IronGate</h2>
+          <h2>irongateguardguard</h2>
         </div>
       </div>
       <div style={{ padding: '12px', textAlign: 'center' }}>

@@ -65,7 +65,7 @@ export default function SentinelList() {
     <div className="page">
       <h1>Monitoring Devices</h1>
       <div className="banner-panel">
-        <p>These are the devices sending monitoring data to IronGate right now.</p>
+        <p>These are the devices sending monitoring data to irongateguardguard right now.</p>
       </div>
       <table className="data-table">
         <caption className="table-caption">Monitoring devices currently sending status and event data.</caption>

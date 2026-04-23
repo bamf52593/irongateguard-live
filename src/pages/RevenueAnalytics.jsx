@@ -330,7 +330,7 @@ export default function RevenueAnalytics() {
             </ul>
             {!launchReadiness.ready && (
               <p style={{ fontSize: '0.8rem', marginTop: '1rem', color: 'var(--color-text-muted, #888)' }}>
-                To fix: go to <strong>render.com → irongate service → Environment</strong> and add the missing keys.
+                To fix: go to <strong>render.com → irongateguardguard service → Environment</strong> and add the missing keys.
               </p>
             )}
           </>
