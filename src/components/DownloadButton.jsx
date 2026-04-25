@@ -51,7 +51,10 @@ export default function DownloadButton({ defaultApiKey = 'test-key' }) {
 
   // Single button, auto-detects everything
   return (
-    <div className="global-download-btn">
+    <div className="global-download-btn" style={{ border: '2px solid red', padding: '1em', margin: '1em 0' }}>
+      <div style={{ color: 'red', fontWeight: 'bold', marginBottom: '0.5em' }}>
+        [DEBUG] DownloadButton Rendered
+      </div>
       <button
         type="button"
         onClick={() => downloadScript(activeCommand, os)}
